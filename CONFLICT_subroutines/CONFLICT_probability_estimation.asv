@@ -1,0 +1,56 @@
+% function CONFLICT_probability_estimation(data)
+%CONFLICT_PROBABILITY_ESTIMATION Summary of this function goes here
+%   Detailed explanation goes here
+% Assuming you have loaded the 'ambiguity_estimation' and 'conflict_estimation' matrices
+
+ambiguity_estimation = [data.Q253_1, data.Q255_1, data.Q256_1]; 
+conflict_estimation = [data.Q257_1, data.Q258_1, data.Q259_1];
+% Calculate the average and standard error for each column in each matrix
+avg_std_ambiguity = [mean(ambiguity_estimation); std(ambiguity_estimation) / sqrt(size(ambiguity_estimation, 1))];
+avg_std_conflict = [mean(conflict_estimation); std(conflict_estimation) / sqrt(size(conflict_estimation, 1))];
+
+% Create a table to display the results
+column_names = {'40-60%', '25-75%', '10-90%'};
+row_names = {'Average', 'Standard Error'};
+ambiguity_table = array2table(avg_std_ambiguity, 'VariableNames', column_names, 'RowNames', row_names);
+conflict_table = array2table(avg_std_conflict, 'VariableNames', column_names, 'RowNames', row_names);
+
+% Display the tables
+disp("Ambiguity Estimation:");
+disp(ambiguity_table);
+
+disp("Conflict Estimation:");
+disp(conflict_table);
+
+% Perform a 2-way ANOVA
+n_participants = height(data);
+all_probaility_estimation = [ambiguity_estimation(:); conflict_estimation(:)];
+uncertinty_type = [repmat({'Ambiguity'}, numel(ambiguity_estimation), 1); repmat({'Conflict'}, numel(conflict_estimation), 1)];
+probability_range = repmat(repelem(column_names, n_participants),1,2);
+
+[p, tbl, stats] = anovan(all_probaility_estimation, {uncertinty_type, probability_range}, 'model', 'interaction', 'varnames', {'Uncertinty type (Amb vs. Conf)', 'Probability Range'});
+ranova(rm,'WithinModel',WM)
+% Display ANOVA results
+disp("ANOVA Results:");
+disp(tbl);
+
+% end
+%%
+clc
+% Combine the data and create categorical variables
+all_probaility_estimation = [ambiguity_estimation(:); conflict_estimation(:)];
+uncertinty_type = [repmat({'Ambiguity'}, numel(ambiguity_estimation), 1); repmat({'Conflict'}, numel(conflict_estimation), 1)];
+probability_range = repmat(repelem(column_names, n_participants), 1, 2)';
+
+% Create a table with the data and categorical variables
+dataTable = table(all_probaility_estimation, uncertinty_type, probability_range, 'VariableNames', {'Estimation', 'UncertaintyType', 'ProbabilityRange'});
+
+% Perform the repeated measures ANOVA using ranova
+rm = fitrm(dataTable, 'Estimation ~ UncertaintyType*ProbabilityRange', 'WithinDesign', probability_range);
+ranovaResults = ranova(rm);
+
+% Display the repeated measures ANOVA results
+disp("Repeated Measures ANOVA Results:");
+disp(ranovaResults);
+
+

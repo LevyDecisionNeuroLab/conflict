@@ -1,0 +1,106 @@
+function CONFLICT_regret_analysis(data, participant_mean_conflict_ambiguity, corrected_conflict, indirect_comparison, big_5_values)
+CONFLICT_print_section_seperator('Regret analysis')
+%% *No regret*
+% ===========
+% data.CREG_c10_r5_conf_w_2; conflicted option is: 10% or 90%, reward $27; Chose CONFLICT and won $27
+fprintf(['As expected, participants did not report anticipating substantial regret\n' ...
+    'when choosing a conflicted option and winning a high reward. \n' ...
+    'Presented with a scenario of choosing a [10%% or 90%%] chance of winning\n' ...
+    '$27, and receiving that reward %.1f %% of the participants reported\n' ...
+    'anticipating no regret (0/100), with an overall population level of\n' ...
+    ' %.1f/100 (std ± %.1f).'],...
+    100*mean(data.CREG_c10_r5_conf_w_2==0), mean(data.CREG_c10_r5_conf_w_2), std(data.CREG_c10_r5_conf_w_2));
+[r,p] = corr(data.CREG_c10_r5_conf_w_2, big_5_values);
+
+%% *Choce conflict and lost*
+% data.CREG_c10_r5_conf_l_2, data.CREG_c40_r27_conf_l_2: conflicted option is: 40% or 60%, reward $27
+chose_conflict_and_lost = mean([data.CREG_c10_r5_conf_l_2, data.CREG_c40_r27_conf_l_2], 2);
+fprintf(['As expected, participants did not report anticipating substantial regret\n' ...
+    'when choosing a conflicted option and winning a high reward. \n' ...
+    'Presented with a scenario of choosing a [40%% or 60%%] chance of winning\n' ...
+    '$27, and losing that reward %.1f %% of the participants reported\n' ...
+    'anticipating maximal regret (100/100), with an overall population level of\n' ...
+    ' %.1f/100 (±%.1f).\n'],...
+    100*mean(chose_conflict_and_lost==100), mean(chose_conflict_and_lost), std(chose_conflict_and_lost));
+
+[r_conflict_lost, p_conflict_lost] = corr(chose_conflict_and_lost, [participant_mean_conflict_ambiguity, corrected_conflict, indirect_comparison]);
+fprintf(['We found a weak but significant correlation (r=%.2f, p=%.3f) between \n' ...
+    'levels of anticipated regret and the indirect comparison score of ' ...
+    'conflict and ambiguity.\n'],...
+    r_conflict_lost(3), p_conflict_lost(3));
+
+[r, p] = corr(chose_conflict_and_lost, big_5_values);
+
+%% *Choce certain and could have won* 
+chose_certain_would_win_conflict = mean([data.CREG_c10_r5_cert_w_1, data.CREG_c40_r27_cert_w_2], 2);
+
+fprintf(['Participants reported mid-range anxiety when choosing a certain ' ...
+    'alternative and learning they would have won have they chosen a the high ' ...
+    'reward\n' ...
+    ' %.1f/100 (±%.1f).\n'],...
+    mean(chose_certain_would_win_conflict), std(chose_certain_would_win_conflict));
+
+[r_conflict_lost, p_conflict_lost] = corr(chose_certain_would_win_conflict, [participant_mean_conflict_ambiguity, corrected_conflict, indirect_comparison]);
+[r, p] = corr(chose_certain_would_win_conflict, big_5_values);
+
+%% Corrected regret score
+% (chose conflict and lost)- (chose certain would have win)
+chose_certain_would_win_conflict = mean([data.CREG_c10_r5_cert_w_1, data.CREG_c40_r27_cert_w_2], 2);
+corrected_regret = chose_conflict_and_lost - chose_certain_would_win_conflict;
+[r_corrected, p_corrected] = corr(corrected_regret, [participant_mean_conflict_ambiguity, corrected_conflict, indirect_comparison]);
+
+fprintf(['When correcting for baseline regret, we find a slightly more ' ...
+    'robus correlation (r=%.2f, p=%.3f) between the corrected \n' ...
+    'levels of anticipated regret and the indirect comparison score of ' ...
+    'conflict and ambiguity.\n'],...
+    r_corrected(3), p_corrected(3));
+
+
+%% Ambiguity regret
+chose_ambiguity_and_lost_corrected = mean([data.AREG_c10_r27_amg_l_1, data.Q162_2], 2) - mean([data.CREG_c25_r27_cert_w_2, data.AREG_c10_r27_cert_w_1],2);
+
+[r_conflict_lost, p_conflict_lost] = corr(chose_ambiguity_and_lost_corrected, [participant_mean_conflict_ambiguity, corrected_conflict, indirect_comparison]);
+fprintf(['We found a weak but significant correlation (r=%.2f, p=%.3f) between \n' ...
+    'levels of anticipated regret and the indirect comparison score of ' ...
+    'conflict and ambiguity.\n'],...
+    r_conflict_lost(3), p_conflict_lost(3))
+%%
+% *Conflict, regrettable outcomes*
+%==================================
+
+% Chose CERTAIN but would have won conflict
+%-------------------------------------------
+% data.CREG_c10_r5_cert_w_1; conflicted option is: 10% or 90%, reward $27; 
+% data.CREG_c40_r27_cert_w_2; conflicted option is: 40% or 60%, reward $27; 
+
+% Chose CONFLICT and won $0
+%---------------------------
+% data.CREG_c10_r5_conf_l_2; conflicted option is: 40% or 60%, reward $27; 
+% data.CREG_c40_r27_conf_l_2; conflicted option is: 40% or 60%, reward $27;
+% (indeed duplicate of CREG_c40_r27_conf_l_2)
+
+% Ambiguity, regrettable outcomes
+%================================
+
+% Chose CERTAIN but would have won ambiguous
+% ------------------------------------------
+% data.CREG_c25_r27_cert_w_2; ambiguous option is: 40% or 60%, reward $27; 
+% data.AREG_c10_r27_cert_w_1; ambiguous option is: 10% or 90%, reward $27;
+
+% Chose AMBIGUOUS and won $0
+% --------------------------
+% data.AREG_c10_r27_amg_l_1; ambiguous option is: 40% or 60%, reward $27;
+% data.Q162_2; ambiguous option is: 40% or 60%, reward $27; 
+% (indeed duplicate of AREG_c10_r27_amg_l_1)
+
+% data.CREG_c10_r5_cert_w_1; % Chose CERTAIN and 
+% data.CREG_c10_r5_conf_w_2
+% data.CREG_c10_r5_conf_l_2
+% data.CREG_c40_r27_cert_w_2
+% data.CREG_c40_r27_conf_l_2
+% data.CREG_c25_r27_cert_w_2
+% 
+% data.AREG_c10_r27_cert_w_1
+% data.AREG_c10_r27_amg_l_1
+% data.Q162_2
+end
