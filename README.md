@@ -20,7 +20,6 @@ In this project, we explore how decision-makers interpret informational conflict
  1. **Risk Choice Analysis**: Examining choices under risk.
  1. **Conflict and Ambiguity Data Analysis**: Comparative study of choices in ambiguous and conflicted scenarios.
  1. **Statistical Analysis**: Utilizing ANOVA and permutation tests to compare conflict and ambiguity attitudes.
- 1. **Model-Based Parameter Estimation**: Estimating individual participant parameters based on their choices.
  1. **Correlation Analysis**: Investigating the relationship between risk, ambiguity, and conflict attitudes.
  1. **Comparative Analysis**: Direct comparison between conflicted and ambiguous decision scenarios.
  1. **Regret Analysis and Big 5 Correlation**: Exploring the relationship between personality traits, regret, and decision-making attitudes.
