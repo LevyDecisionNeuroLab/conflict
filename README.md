@@ -15,7 +15,7 @@ In this project, we explore how decision-makers interpret informational conflict
 * **Parameter Fitting**: Modules for estimating participant parameters.
 * **Report Generation**: Scripts for creating comprehensive analysis reports.
 
-## Analysis Workflow
+## Analysis Workflow (see `CONFLICT_main.m`)
  1. **Participant Data Processing**: Filtering and preparing participant data.
  1. **Risk Choice Analysis**: Examining choices under risk.
  1. **Conflict and Ambiguity Data Analysis**: Comparative study of choices in ambiguous and conflicted scenarios.
